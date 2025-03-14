@@ -4,22 +4,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-#datos de perfil test
-#client id: WGN3WllyMnMyb3pjWWlyMndGbmI6MTpjaQ
-#bearer_token: AAAAAAAAAAAAAAAAAAAAADGvzAEAAAAA8A5QoUXTiD2bHySrd3S4%2FOPsTpU%3DzjcfEfZFWdcDnVE6cuoGFd5CAR1QX9QkBDGhWflUQaExkeB1r1
-#consumer_key = "q5LxnNhvIHGdVStwpdNfQthaq"
-#consumer_secret = "2bn23gwwOCO4EltzJnPIW4h4TJWu4vLEr61zkN8ShHG3PsqyQc"
-#access_token = "1889778308813824000-by07iVvCZVDpoBzgkKTwDv4FWypw28"
-#access_token_secret = "Lnx4NepuTWehr7PNz5FEbhPRAF12UKzSbhVgGJtGcNBl4"
-
-#datos de perfil cy
-#client id= "N1phcDlXNUdKcFFMbnJzQnk5MHY6MTpjaQ"
-#client secret = "S0VkaYcyhy4rDWOicB5uZ7HGg6NnchVDq-UzyTrmAgy2vtliML"
-#bearer_token: "AAAAAAAAAAAAAAAAAAAAAFu7zwEAAAAAxNa3IE8S%2BxRjqcxvdGWlROaew4I%3DiBKsx81JQUruASyE1v9ytYujhFXl5AX7BCGawbkTY986uRbXqz"
-#consumer_key = "zcNMT9hEQawsovx7X1rZMzwc3"
-#consumer_secret = "T1pCwU6YNN3YXr8kZ8jGxzOurmNbAM3K9glml6oMpHDTjWPqhg"
-#access_token = "86398919-NzbEg13HFUxnxe6EbittoAjR1dNRu5azKP5zBxpJl"
-#access_token_secret = "3596TpI0kjgSuYRVU2XMFTJvDxnIplNQpwk1wuOhgI7dU"
 
 #variables globales
 CONSUMER_KEY = os.getenv("CONSUMER_KEY")
