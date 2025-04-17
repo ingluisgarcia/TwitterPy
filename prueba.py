@@ -125,6 +125,21 @@ def retweet_from_user(username):
             print(f"Error inesperado: {e}")
             break
 
+def retweet_tweet_by_tweetId(tweet_id):
+    client = tweepy.Client(
+        bearer_token=BEARER_TOKEN,
+        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
+    )
+
+    try:
+        client.retweet(tweet_id, user_auth=True)
+        print(f"Retweet realizado: https://twitter.com/user/status/{tweet_id}")
+    except tweepy.errors.TooManyRequests:
+        print("Se alcanzó el límite de solicitudes. Intenta más tarde.")
+    except Exception as e:
+        print(f"Error al hacer retweet: {e}")
+
 def retweet_from_users(usernames):
     client = tweepy.Client(
         bearer_token=BEARER_TOKEN,
@@ -268,5 +283,6 @@ usuario = "cymaniatico"
 #retweet_mentions()
 #retweet_from_user(usuario)
 #like_user_tweets(usuario)
-like_tweet_by_tweetId("1907314722757591428")
+#like_tweet_by_tweetId("1907314722757591428")
+retweet_tweet_by_tweetId("1905029441991963001")
 
