@@ -106,6 +106,54 @@ def retweet_from_users(usernames):
         except Exception as e:
             print(f"Error inesperado con @{username}: {e}")
 
+def reply_to_tweet(tweet_id, reply_text):
+    client = tweepy.Client(
+        bearer_token=BEARER_TOKEN,
+        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
+    )
+
+    response = client.create_tweet(
+        text=reply_text,
+        in_reply_to_tweet_id=tweet_id
+    )
+    print(f"Respuesta enviada: https://twitter.com/user/status/{response.data['id']}")
+
+def auto_reply_to_mention(reply_text):
+    client = tweepy.Client(
+        bearer_token=BEARER_TOKEN,
+        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
+    )
+
+    user = client.get_me()
+    user_id = user.data.id
+
+    try:
+        mentions = client.get_users_mentions(user_id, max_results=5, user_auth=True)
+
+        if mentions.data:
+            last_mention = mentions.data[0]
+            username = last_mention.author_id  # Usamos ID porque el username no se incluye por defecto
+
+            # Para obtener el username, hacemos una petición adicional
+            user_info = client.get_user(id=username, user_auth=True)
+            username_str = user_info.data.username
+
+            full_reply = f"@{username_str} {reply_text}"
+            response = client.create_tweet(
+                text=full_reply,
+                in_reply_to_tweet_id=last_mention.id
+            )
+            print(f"Respuesta automática enviada: https://twitter.com/user/status/{response.data['id']}")
+        else:
+            print("No hay menciones para responder.")
+    except tweepy.errors.TooManyRequests:
+        print("Se alcanzó el límite de solicitudes. Esperando 15 segundos...")
+        time.sleep(15)
+    except Exception as e:
+        print(f"Error inesperado en auto-reply: {e}")
+
 # Ejemplo de uso
 #tweet_text = input("Ingrese el texto del tweet: ")
 #send_tweet(tweet_text)
