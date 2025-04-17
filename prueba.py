@@ -51,6 +51,51 @@ def like_last_mention():
             print(f"Error inesperado: {e}")
             break
 
+def like_tweet_by_tweetId(tweet_id):
+    client = tweepy.Client(
+        bearer_token=BEARER_TOKEN,
+        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
+    )
+
+    try:
+        client.like(tweet_id, user_auth=True)
+        print(f"Like dado al tweet: https://twitter.com/user/status/{tweet_id}")
+    except tweepy.errors.TooManyRequests:
+        print("Se alcanzó el límite de solicitudes. Intenta más tarde.")
+    except Exception as e:
+        print(f"Error al dar like: {e}")
+
+
+def like_user_tweets(username):
+    client = tweepy.Client(
+        bearer_token=BEARER_TOKEN,
+        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
+    )
+    
+    try:
+        # Obtener el ID del usuario por su username
+        user = client.get_user(username=username)
+        user_id = user.data.id
+
+        # Obtener los últimos tweets del usuario
+        tweets = client.get_users_tweets(user_id, max_results=5, user_auth=True)
+        
+        if tweets.data:
+            for tweet in tweets.data:
+                try:
+                    client.like(tweet.id, user_auth=True)
+                    print(f"Like dado al tweet: https://twitter.com/{username}/status/{tweet.id}")
+                    time.sleep(1)  # Pequeña pausa para evitar límite
+                except tweepy.errors.TooManyRequests:
+                    print("Límite de solicitudes alcanzado. Esperando 15 minutos...")
+                    time.sleep(900)
+        else:
+            print(f"No se encontraron tweets recientes de @{username}")
+    
+    except Exception as e:
+        print(f"Error: {e}")
 
 def retweet_from_user(username):
     client = tweepy.Client(
@@ -74,8 +119,8 @@ def retweet_from_user(username):
                 print(f"No hay nuevos tweets de @{username}.")
             break
         except tweepy.errors.TooManyRequests:
-            print("Se alcanzó el límite de solicitudes. Esperando 15 segundos...")
-            time.sleep(15)
+            print("Se alcanzó el límite de solicitudes para retweets. Esperando 15 minutos...")
+            time.sleep(900)
         except Exception as e:
             print(f"Error inesperado: {e}")
             break
@@ -102,9 +147,44 @@ def retweet_from_users(usernames):
                 print(f"No hay nuevos tweets de @{username}.")
         except tweepy.errors.TooManyRequests:
             print("Se alcanzó el límite de solicitudes. Esperando 15 segundos...")
-            time.sleep(15)
+            time.sleep(900)
         except Exception as e:
             print(f"Error inesperado con @{username}: {e}")
+
+def retweet_mentions():
+    client = tweepy.Client(
+        bearer_token=BEARER_TOKEN,
+        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
+    )
+
+    try:
+        auth_user = client.get_me(user_auth=True)
+        user_id = auth_user.data.id
+
+        while True:
+            try:
+                # Obtener los últimos tweets donde se menciona al usuario autenticado
+                mentions = client.get_users_mentions(id=user_id, max_results=5, user_auth=True)
+
+                if mentions.data:
+                    for tweet in mentions.data:
+                        client.retweet(tweet.id, user_auth=True)
+                        print(f"Retweet realizado: https://twitter.com/i/web/status/{tweet.id}")
+                else:
+                    print("No hay nuevas menciones.")
+                break
+
+            except tweepy.errors.TooManyRequests:
+                print("Límite de solicitudes alcanzado. Esperando 15 segundos...")
+                time.sleep(900)
+            except Exception as e:
+                print(f"Error inesperado: {e}")
+                break
+
+    except Exception as e:
+        print(f"No se pudo obtener el usuario autenticado: {e}")
+
 
 def reply_to_tweet(tweet_id, reply_text):
     client = tweepy.Client(
@@ -150,9 +230,30 @@ def auto_reply_to_mention(reply_text):
             print("No hay menciones para responder.")
     except tweepy.errors.TooManyRequests:
         print("Se alcanzó el límite de solicitudes. Esperando 15 segundos...")
-        time.sleep(15)
+        time.sleep(900)
     except Exception as e:
         print(f"Error inesperado en auto-reply: {e}")
+
+def obtener_y_responder_ultimo_tweet(nombre_usuario, mensaje_respuesta):
+    client = tweepy.Client(
+        bearer_token=BEARER_TOKEN,
+        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
+    )
+    # 1. Obtener ID del usuario
+    usuario = client.get_user(username=nombre_usuario)
+    user_id = usuario.data.id
+
+    # 2. Obtener los últimos tweets del usuario (el primero es el más reciente)
+    tweets = client.get_users_tweets(id=user_id, max_results=5)
+
+    if tweets.data:
+        tweet_id = tweets.data[0].id
+        print(f"Último tweet ID: {tweet_id}")
+        # 3. Responder al tweet
+        reply_to_tweet(tweet_id, mensaje_respuesta)
+    else:
+        print("El usuario no tiene tweets recientes.")
 
 # Ejemplo de uso
 #tweet_text = input("Ingrese el texto del tweet: ")
@@ -160,5 +261,12 @@ def auto_reply_to_mention(reply_text):
 
 #like_last_mention()
 
-target_user = input("Ingrese el nombre de usuario para hacer retweet: ")
-retweet_from_user(target_user)
+#mensaje = input("Escribe el mensaje")
+usuario = "cymaniatico"
+#reply_to_tweet("1907314722757591428", "A la espera de la siguiente temporada!")
+#obtener_y_responder_ultimo_tweet(usuario, "Mis condolencias")
+#retweet_mentions()
+#retweet_from_user(usuario)
+#like_user_tweets(usuario)
+like_tweet_by_tweetId("1907314722757591428")
+
