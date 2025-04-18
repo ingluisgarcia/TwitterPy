@@ -14,6 +14,7 @@ BEARER_TOKEN = os.getenv("BEARER_TOKEN")
 
 def create_client():
     return tweepy.Client(
+        bearer_token=BEARER_TOKEN,
         consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
         access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
     )
@@ -24,11 +25,7 @@ def send_tweet(text):
     print(f"Tweet enviado: https://twitter.com/user/status/{response.data['id']}")
 
 def like_last_mention():
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
     
     user = client.get_me()
     user_id = user.data.id
@@ -52,11 +49,7 @@ def like_last_mention():
             break
 
 def like_tweet_by_tweetId(tweet_id):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
 
     try:
         client.like(tweet_id, user_auth=True)
@@ -68,11 +61,7 @@ def like_tweet_by_tweetId(tweet_id):
 
 
 def like_user_tweets(username):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
     
     try:
         # Obtener el ID del usuario por su username
@@ -98,11 +87,7 @@ def like_user_tweets(username):
         print(f"Error: {e}")
 
 def retweet_from_user(username):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
     
     user = client.get_user(username=username, user_auth=True)
     user_id = user.data.id
@@ -126,11 +111,7 @@ def retweet_from_user(username):
             break
 
 def retweet_tweet_by_tweetId(tweet_id):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
 
     try:
         client.retweet(tweet_id, user_auth=True)
@@ -141,11 +122,7 @@ def retweet_tweet_by_tweetId(tweet_id):
         print(f"Error al hacer retweet: {e}")
 
 def retweet_from_users(usernames):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
     
     for username in usernames:
         try:
@@ -167,11 +144,7 @@ def retweet_from_users(usernames):
             print(f"Error inesperado con @{username}: {e}")
 
 def retweet_mentions():
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
 
     try:
         auth_user = client.get_me(user_auth=True)
@@ -202,11 +175,7 @@ def retweet_mentions():
 
 
 def reply_to_tweet(tweet_id, reply_text):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
 
     response = client.create_tweet(
         text=reply_text,
@@ -215,11 +184,7 @@ def reply_to_tweet(tweet_id, reply_text):
     print(f"Respuesta enviada: https://twitter.com/user/status/{response.data['id']}")
 
 def auto_reply_to_mention(reply_text):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
 
     user = client.get_me()
     user_id = user.data.id
@@ -250,11 +215,8 @@ def auto_reply_to_mention(reply_text):
         print(f"Error inesperado en auto-reply: {e}")
 
 def obtener_y_responder_ultimo_tweet(nombre_usuario, mensaje_respuesta):
-    client = tweepy.Client(
-        bearer_token=BEARER_TOKEN,
-        consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
-        access_token=ACCESS_TOKEN, access_token_secret=ACCESS_TOKEN_SECRET
-    )
+    client = create_client()
+    
     # 1. Obtener ID del usuario
     usuario = client.get_user(username=nombre_usuario)
     user_id = usuario.data.id
